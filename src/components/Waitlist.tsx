@@ -123,7 +123,7 @@ export default function Waitlist() {
           className="mt-12 pt-12 border-t border-gray-800"
         >
           <div className="flex justify-center gap-8 text-sm text-gray-500">
-            <a href="https://x.com/Bitsapiens_" className="hover:text-white transition-colors">Twitter</a>
+            <a href="https://x.com/rgbtax" className="hover:text-white transition-colors">Twitter</a>
             <a href="#" className="hover:text-white transition-colors">Discord</a>
             <a href="https://github.com/bitsapiens" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
           </div>
