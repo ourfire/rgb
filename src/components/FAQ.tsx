@@ -5,27 +5,23 @@ import { motion } from 'framer-motion'
 const faqs = [
   {
     question: 'Can I choose my color?',
-    answer: 'No. Colors are randomly assigned. That\'s the game.',
+    answer: 'No. Random only.',
   },
   {
-    question: 'What if I get a common color?',
-    answer: 'You still participate in the daily lottery with 1x tickets. You can still win. The odds are just lower.',
+    question: 'What do I get?',
+    answer: 'One unique color. RGB values. XYZ coordinates.',
   },
   {
-    question: 'Where is the metadata stored?',
-    answer: '100% on-chain. The smart contract generates SVG and JSON. No IPFS. No external dependencies.',
+    question: 'Where is metadata?',
+    answer: '100% on-chain.',
   },
   {
-    question: 'What is composability?',
-    answer: 'Your RGB values (R, G, B) can be used by other apps: as XYZ coordinates in 3D metaverses, color codes in domain systems, visual identity in social networks, or seeds for generative art. Developers build on top of these primitives.',
+    question: 'What is the lottery?',
+    answer: 'Daily draw. Rare colors = more tickets. 30% of revenue to winners.',
   },
   {
-    question: 'Is this a Ponzi?',
-    answer: 'No. It\'s a transparent lottery. Rare holders don\'t recruit new holders. Revenue comes from mints, royalties, and ecosystem fees. It\'s all on-chain and auditable.',
-  },
-  {
-    question: 'What happens after sellout?',
-    answer: 'Royalties from secondary sales (5%) + fees from app integrations fund the daily lottery perpetually.',
+    question: 'What can I build?',
+    answer: '3D worlds, domains, identities, art. RGB = XYZ.',
   },
 ]
 

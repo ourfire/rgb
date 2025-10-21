@@ -54,7 +54,7 @@ export default function Waitlist() {
           viewport={{ once: true }}
           className="text-4xl md:text-6xl font-bold mb-6"
         >
-          Join the Waitlist
+          Waitlist
         </motion.h2>
         
         <motion.p
@@ -64,7 +64,7 @@ export default function Waitlist() {
           viewport={{ once: true }}
           className="text-gray-400 mb-12"
         >
-          Get notified when RGB launches. Optional: provide your wallet address for early access.
+          Get notified.
         </motion.p>
 
         {isSubmitted ? (
