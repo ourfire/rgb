@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 export default function Waitlist() {
+  const [email, setEmail] = useState('')
   const [wallet, setWallet] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -12,15 +13,27 @@ export default function Waitlist() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
-    // Basic validation
+
+    // Email validation
+    if (!email) {
+      setError('Email address is required')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    // Wallet validation (optional)
     if (wallet && !wallet.startsWith('0x')) {
       setError('Please enter a valid Ethereum address')
       return
     }
 
     if (wallet && wallet.length !== 42) {
-      setError('Please enter a valid Ethereum address')
+      setError('Ethereum address must be 42 characters')
       return
     }
 
@@ -30,9 +43,10 @@ export default function Waitlist() {
       // TODO: Implement actual API call when ready
       // For now, just simulate submission
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      console.log('Wallet submitted:', wallet || 'No wallet provided')
+
+      console.log('Submission:', { email, wallet: wallet || 'Not provided' })
       setIsSubmitted(true)
+      setEmail('')
       setWallet('')
     } catch (err) {
       setError('Something went wrong. Please try again.')
@@ -64,7 +78,7 @@ export default function Waitlist() {
           viewport={{ once: true }}
           className="text-gray-400 mb-12"
         >
-          Get notified.
+          Be the first to know when the mint goes live.
         </motion.p>
 
         {isSubmitted ? (
@@ -75,7 +89,7 @@ export default function Waitlist() {
           >
             <div className="text-2xl mb-4">✓</div>
             <p className="text-gray-400">
-              Thank you for joining! We'll notify you when RGB launches.
+              Thank you for joining! We'll notify you when the mint is ready.
             </p>
             <button
               onClick={() => setIsSubmitted(false)}
@@ -93,6 +107,15 @@ export default function Waitlist() {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
+            <input
+              type="email"
+              placeholder="Email Address*"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-6 py-4 bg-black border border-gray-800 focus:border-white outline-none transition-colors"
+            />
+
             <input
               type="text"
               placeholder="Wallet Address (Optional)"
