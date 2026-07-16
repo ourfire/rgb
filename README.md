@@ -1,10 +1,12 @@
-# RGB - An Artwork as a NFT Evolutive Lottery
+# RGB - One Color. One Coordinate. One Primitive.
 
-16,777,216 colors. All on-chain. All unique.
+16,777,216 colors. One color = one tokenId = one NFT, on-chain, on Base L2.
 
 ## About
 
-RGB is a lottery in its mechanics, an artwork in its concept, and the complete RGB spectrum tokenized on-chain for builders to create on top of.
+RGB tokenizes the full RGB color system: every one of the 16,777,216 colors is mintable by choice, first come first served. RGB values double as XYZ coordinates — the color IS a point in the 256³ cube — positioning the collection as an open, CC0 primitive for other builders (3D worlds, identities, games).
+
+8 genesis colors (black, white, and the 6 pure colors) can't be minted directly — they're raffled among minters at public mint milestones via Chainlink VRF.
 
 ## Tech Stack
 
@@ -13,6 +15,7 @@ RGB is a lottery in its mechanics, an artwork in its concept, and the complete R
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
 - **Font**: JetBrains Mono
+- **Web3**: wagmi v2 + viem 2 + @tanstack/react-query (Base L2)
 
 ## Getting Started
 
@@ -56,15 +59,17 @@ rgb-landing/
 │   │   └── globals.css     # Global styles
 │   ├── components/
 │   │   ├── Navigation.tsx  # Top navigation
-│   │   ├── Hero.tsx        # Hero section
-│   │   ├── Preview.tsx     # Color preview tool
+│   │   ├── Hero.tsx        # Hero section (interactive RGB poster)
+│   │   ├── Mint.tsx        # Mint dApp (pick / random pack / range)
 │   │   ├── Manifesto.tsx   # Project manifesto
 │   │   ├── HowItWorks.tsx  # How it works section
-│   │   ├── Rarity.tsx      # Rarity tiers
+│   │   ├── Rarity.tsx      # Rarity tiers + genesis raffle
 │   │   ├── FAQ.tsx         # FAQ section
 │   │   └── Waitlist.tsx    # Waitlist form
 │   └── lib/
-│       └── utils.ts        # Utility functions
+│       ├── contract.ts     # ABI, addresses, price, tokenId↔RGB helpers
+│       ├── wagmi.ts        # Chain + connector config
+│       └── utils.ts        # Utility functions (rarity classification, etc.)
 ├── public/                 # Static assets
 └── package.json
 ```
@@ -72,8 +77,10 @@ rgb-landing/
 ## Features
 
 - ✅ Fully responsive design
-- ✅ Interactive color preview tool
-- ✅ Download color images
+- ✅ Interactive RGB poster (live channel sweep on hover)
+- ✅ Wallet connect (MetaMask/Rabby + Coinbase Smart Wallet)
+- ✅ Mint dApp: pick exact color, random pack, or range mint
+- ✅ Live on-chain availability check
 - ✅ Smooth scroll navigation
 - ✅ Animated sections
 - ✅ Waitlist form
@@ -89,25 +96,29 @@ rgb-landing/
 
 ### Environment Variables
 
-Currently no environment variables are required for the static site.
+- `NEXT_PUBLIC_CHAIN` - `baseSepolia` (testnet) or `base` (mainnet)
+- `NEXT_PUBLIC_RGB_ADDRESS` - deployed RGBToken contract address
 
-When implementing the waitlist API, you'll need:
+When implementing the waitlist API, you'll also need:
 - `WAITLIST_API_URL` - Your waitlist backend endpoint
 
 ## Roadmap
 
-- [ ] Connect waitlist to backend
-- [ ] Add social media links
-- [ ] Implement analytics
-- [ ] Add more interactive elements
-- [ ] Connect to smart contracts (Phase 2)
+- [x] Web3 mint UI (wagmi + Base) on branch `web3-mint`
+- [x] Narrative updated across Hero / Rarity / HowItWorks / FAQ / Manifesto
+- [ ] Deploy contracts to Base Sepolia + point preview env vars at it
+- [ ] End-to-end mint test + security review (Slither + external)
+- [ ] Safe multisig treasury
+- [ ] Base mainnet deploy, merge `web3-mint` to `main`
+- [ ] Mint gallery, genesis milestone countdown, IPFS mirror + ENS, builder docs
 
 ## License
 
-All rights reserved © 2025 BitSapiens
+CC0 — no rights reserved.
 
 ## Links
 
-- Website: [rgb.bitsapiens.art](https://rgb.bitsapiens.art)
+- Website: [rgb.tax](https://rgb.tax)
+- By: [BitSapiens](https://bitsapiens.art)
 - Twitter: TBA
 - Discord: TBA
