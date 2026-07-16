@@ -11,7 +11,7 @@ const steps = [
   {
     number: '02',
     title: 'Win',
-    description: 'Daily lottery. Rare = more chances.',
+    description: 'Every mint is a genesis raffle ticket. 8 mythic colors, drawn at milestones.',
   },
   {
     number: '03',

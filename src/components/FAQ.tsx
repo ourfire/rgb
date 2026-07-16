@@ -16,8 +16,8 @@ const faqs = [
     answer: '100% on-chain.',
   },
   {
-    question: 'What is the lottery?',
-    answer: 'Daily draw. Rare colors = more tickets. 30% of revenue to winners.',
+    question: 'What is the genesis raffle?',
+    answer: 'The 8 mythic colors cannot be minted. At public mint milestones, one is raffled among that round\'s minters via Chainlink VRF. Every paid mint = one ticket.',
   },
   {
     question: 'What can I build?',

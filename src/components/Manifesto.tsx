@@ -19,7 +19,7 @@ export default function Manifesto() {
           <p>One NFT.</p>
           <p>One color.</p>
           <p>One XYZ coordinate.</p>
-          <p className="text-white">A lottery to sell them all.</p>
+          <p className="text-white">One primitive to build them all.</p>
         </motion.div>
       </div>
     </section>
