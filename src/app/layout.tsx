@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+import Providers from './providers'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'RGB - An Artwork as a NFT Evolutive Lottery',
     description: '16,777,216 colors. All on-chain. All unique.',
-    url: 'https://rgb.bitsapiens.art',
+    url: 'https://rgb.tax',
     siteName: 'RGB',
     locale: 'en_US',
     type: 'website',
@@ -36,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={jetbrainsMono.variable}>
       <body className="font-mono bg-black text-white antialiased">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

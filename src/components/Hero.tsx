@@ -72,7 +72,7 @@ export default function Hero() {
           className="grid grid-cols-2 gap-8 max-w-md mx-auto pt-8 border-t border-gray-800"
         >
           <div>
-            <div className="text-2xl font-bold">0.0001Ξ</div>
+            <div className="text-2xl font-bold">0.0003Ξ</div>
             <div className="text-sm text-gray-500">Price</div>
           </div>
           <div>

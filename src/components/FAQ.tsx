@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 const faqs = [
   {
     question: 'Can I choose my color?',
-    answer: 'No. Random only.',
+    answer: 'Yes. Pick any free color, first come first served. Random packs and range sweeps are also available. Only the 8 genesis colors (black, white, and the 6 pure colors) cannot be chosen — they are raffled among minters at public milestones.',
   },
   {
     question: 'What do I get?',

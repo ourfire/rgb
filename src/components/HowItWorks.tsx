@@ -6,7 +6,7 @@ const steps = [
   {
     number: '01',
     title: 'Mint',
-    description: '0.0001 ETH. Random color.',
+    description: '0.0003 ETH. Pick your exact color — or mint random packs.',
   },
   {
     number: '02',
