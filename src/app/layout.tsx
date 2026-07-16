@@ -10,13 +10,13 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'RGB - An Artwork as a NFT Evolutive Lottery',
-  description: '16,777,216 colors. All on-chain. All unique.',
-  keywords: ['NFT', 'RGB', 'lottery', 'on-chain', 'ethereum', 'art', 'colors'],
+  title: 'RGB - One Color. One Coordinate. One Primitive.',
+  description: '16,777,216 colors. One color = one tokenId = one NFT, 100% on-chain, on Base.',
+  keywords: ['NFT', 'RGB', 'genesis raffle', 'on-chain', 'base', 'ethereum', 'art', 'colors'],
   authors: [{ name: 'BitSapiens' }],
   openGraph: {
-    title: 'RGB - An Artwork as a NFT Evolutive Lottery',
-    description: '16,777,216 colors. All on-chain. All unique.',
+    title: 'RGB - One Color. One Coordinate. One Primitive.',
+    description: '16,777,216 colors. One color = one tokenId = one NFT, 100% on-chain, on Base.',
     url: 'https://rgb.tax',
     siteName: 'RGB',
     locale: 'en_US',
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RGB - An Artwork as a NFT Evolutive Lottery',
-    description: '16,777,216 colors. All on-chain. All unique.',
+    title: 'RGB - One Color. One Coordinate. One Primitive.',
+    description: '16,777,216 colors. One color = one tokenId = one NFT, 100% on-chain, on Base.',
   },
 }
 
