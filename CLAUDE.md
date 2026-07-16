@@ -1,124 +1,63 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## Project Overview
 
-RGB is an NFT lottery/artwork project that tokenizes all 16,777,216 RGB colors on-chain. The landing page showcases the concept with an interactive color preview tool, rarity system, and waitlist functionality.
+**RGB** (rgb.tax) is an on-chain artwork by BitSapiens: the full RGB color system tokenized. 16,777,216 colors — one color = one tokenId = one NFT, on **Base L2**. 100% on-chain metadata and SVG. CC0. RGB values double as XYZ coordinates (the color IS a point in the 256³ cube), positioning the collection as an open primitive for other builders (3D worlds, identities, games).
+
+This repo is the **landing page + mint dApp** (Next.js). The **smart contracts live in a separate Foundry project** (not this repo): `RGBToken.sol` (the ERC721 primitive) and `RGBGenesisRaffle.sol` (Chainlink VRF raffle for the 8 genesis colors).
+
+## Final Design Decisions (do NOT revert to older narratives)
+
+- **Mint by choice**: users pick their exact color, first come first served. Four mint paths in the contract: `mint(tokenId)`, `mintBatch(ids[])`, `mintRange(from,to)` (skips taken/genesis, auto-refunds excess), `mintRandom(count)` (pseudo-random by design — choice mint makes secure randomness pointless). Max 5,000 per tx.
+- **Price: 0.0003 ETH**, fixed constant, immutable. Forwarded to treasury (Safe multisig) on every mint.
+- **No supply cap beyond the color space itself** (16,777,216).
+- **8 Genesis colors** — black (0x000000), white (0xFFFFFF), and the 6 pure colors (0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF) — are **blocked from minting**. They are raffled at public mint milestones: every paid mint = one ticket in the active tranche; winners drawn via **Chainlink VRF v2.5**; draws are permissionless (`requestDraw()`).
+- **There is NO daily lottery, NO ticket multipliers by rarity, NO 30% rewards pool.** That was the old narrative. Any copy mentioning it is a bug.
+- **Rarity tiers** are a pure on-chain classification (contract `tierOf()`), matching `getRarity()` in `src/lib/utils.ts`: B/W (2, genesis), PURE (6, genesis), GRAYSCALE (254), HARMONY (~196k, two channels exactly equal), VIVID (~390k, a channel at exactly 0 or 255), SPECTRUM (everything else). If web copy and these numbers diverge, these numbers win.
+- Tagline evolution: "One color. One coordinate. One primitive." / Manifesto closes with "One primitive to build them all."
+- The official NFT image is the **plain color** (no text). The contract also exposes `svgOf(tokenId, labeled)` for a labeled version (hex + RGB + XYZ, auto black/white contrast by luminance).
+
+## Web3 Integration (this repo)
+
+- **Stack**: wagmi v2 + viem 2 + @tanstack/react-query. Connectors: `injected()` (MetaMask/Rabby) and `coinbaseWallet()` (Smart Wallet, passkey onboarding).
+- Key files:
+  - `src/lib/contract.ts` — minimal ABI, addresses, price, genesis set, tokenId↔RGB helpers, basescan URLs
+  - `src/lib/wagmi.ts` — chain + connector config
+  - `src/app/providers.tsx` — WagmiProvider + QueryClient wrapper (imported in layout)
+  - `src/components/Mint.tsx` — mint UI: RGB sliders + hex input, live availability check (`ownerOf` revert = free), three mint modes (pick / random pack / range), tx states, Basescan links
+- **Env vars** (Vercel): `NEXT_PUBLIC_CHAIN` = `baseSepolia` | `base`; `NEXT_PUBLIC_RGB_ADDRESS` = deployed RGBToken address. Testnet shows a yellow TESTNET banner automatically.
+- tokenId math: `(r << 16) | (g << 8) | b`. The tokenId IS the color.
+
+## Current Status & Roadmap
+
+- ✅ Contracts written & tested (26/26 Foundry tests, incl. fuzz + full raffle flow) — separate repo/zip
+- ✅ Web3 mint UI integrated on branch `web3-mint` (preview on Vercel)
+- ✅ Narrative updated across Hero / Rarity / HowItWorks / FAQ / Manifesto
+- ⏳ NEXT: deploy to **Base Sepolia** (Foundry script → VRF subscription → `mintGenesis`) → point preview env vars at it → end-to-end mint test → security review (Slither + external) → Safe multisig treasury → Base mainnet → merge `web3-mint` to `main` (Vercel auto-deploys rgb.tax)
+- Deliberately deferred: mint gallery (ColorMinted events feed), genesis milestone countdown, IPFS mirror + ENS, builder docs page
 
 ## Development Commands
 
 ```bash
-# Start development server (runs on http://localhost:3000)
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Run ESLint
+npm run dev      # http://localhost:3000
+npm run build    # production build — ALWAYS run before committing
 npm run lint
 ```
 
-## Tech Stack
+## Tech Stack & Conventions
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript (strict mode enabled)
-- **Styling**: Tailwind CSS with custom RGB color configuration
-- **Animations**: Framer Motion
-- **Font**: JetBrains Mono (monospace)
+- Next.js 14 (App Router), TypeScript strict, Tailwind, Framer Motion, JetBrains Mono
+- Path alias `@/*` → `./src/*`
+- Dark theme: black bg, white text, `border-gray-800`; primary buttons white bg / secondary border-white; genesis accents use yellow (`text-yellow-500`)
+- Framer Motion pattern: `initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}`
+- Page sections in order: Navigation, Hero (RGB poster w/ interactive channel sweep), Mint, Manifesto, HowItWorks, Rarity, FAQ, Waitlist
 
-## Architecture
+## Working Agreements
 
-### Page Structure
-
-The application is a single-page layout (`src/app/page.tsx`) with sequential sections:
-1. Navigation (sticky header with smooth scroll links)
-2. Hero
-3. Preview (interactive color tool)
-4. Manifesto
-5. How It Works
-6. Rarity
-7. FAQ
-8. Waitlist
-
-All components are client-side rendered where interactivity is needed (Preview, Waitlist).
-
-### Path Aliases
-
-The project uses `@/*` to alias `./src/*` - always use this for imports:
-```typescript
-import { generateRandomColor } from '@/lib/utils'
-import Navigation from '@/components/Navigation'
-```
-
-### Color System
-
-The core color utilities (`src/lib/utils.ts`) provide:
-- `RGBColor` type: `{ r: number, g: number, b: number }`
-- `generateRandomColor()`: Generates random RGB values (0-255)
-- `rgbToHex()`: Converts RGB to hex format
-- `getContrastColor()`: Returns black or white for text contrast
-- `getRarity()`: Classifies colors into 6 rarity tiers based on specific RGB patterns
-
-**Rarity Tiers** (in order of rarity):
-1. **B/W**: Pure black (0,0,0) or white (255,255,255)
-2. **PURE COLORS**: Primary/secondary colors (pure red, green, blue, cyan, magenta, yellow)
-3. **GRAYSCALE**: All three channels equal
-4. **HARMONY**: Two channels equal
-5. **VIVID**: At least one channel <20 or >235
-6. **SPECTRUM**: Everything else
-
-### Preview Component
-
-The Preview section (`src/components/Preview.tsx`) is the most complex component:
-- Generates random colors on mount
-- Allows text overlay customization (size: small/normal/large, position: 5 positions)
-- Downloads 1000x1000px PNG images with Canvas API
-- Uses Framer Motion for scroll-triggered animations
-
-### Styling Conventions
-
-- Uses dark theme (black background, white text)
-- Custom Tailwind colors: `rgb-red`, `rgb-green`, `rgb-blue` (all #FF0000, #00FF00, #0000FF)
-- Custom animations: `fade-in`, `slide-up`
-- Consistent border color: `border-gray-800`
-- Button patterns: white bg for primary actions, border-white for secondary
-
-### Framer Motion Patterns
-
-All sections use consistent animation pattern:
-```typescript
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  viewport={{ once: true }}
->
-```
-
-## Key Implementation Details
-
-### Image Download Functionality
-
-The `downloadColorImage()` function in `src/lib/utils.ts` creates a canvas element, renders the color with optional text overlay, and triggers a download. Text sizing and positioning are converted from UI values to canvas coordinates.
-
-### TypeScript Configuration
-
-- Strict mode is enabled
-- Module resolution uses "bundler" (Next.js 14 default)
-- Path mapping configured for `@/*` alias
-
-## Future Integration Points
-
-Based on README roadmap:
-- Waitlist form (`src/components/Waitlist.tsx`) currently client-side only - will need backend integration via `WAITLIST_API_URL` env variable
-- Smart contract integration planned for Phase 2
-- Analytics integration planned
-- Social media links to be added
-
-## Deployment
-
-Designed for Vercel deployment (auto-detected as Next.js project). No environment variables currently required for static site functionality.
+- Work on feature branches (current: `web3-mint`), never push directly to `main` — merging to `main` deploys rgb.tax via Vercel
+- `npm run build` must pass before any commit
+- Keep dependencies minimal (supply-chain risk: this page will move money)
+- Owner is not a professional developer: explain commands before running them, prefer small verifiable steps, ask before destructive operations
+- Language: owner communicates in Spanish; code/comments in English
