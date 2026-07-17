@@ -39,6 +39,7 @@ export default function Mint() {
   const [randomCount, setRandomCount] = useState(10)
   const [rangeFrom, setRangeFrom] = useState('#100000')
   const [rangeTo, setRangeTo] = useState('#1003E7')
+  const [walletMenuOpen, setWalletMenuOpen] = useState(false)
 
   const { address, isConnected } = useAccount()
   const { connect, connectors, isPending: connecting } = useConnect()
@@ -113,6 +114,10 @@ export default function Mint() {
   }
 
   const busy = signing || confirming
+
+  useEffect(() => {
+    if (isConnected) setWalletMenuOpen(false)
+  }, [isConnected])
 
   return (
     <section id="mint" className="min-h-screen flex items-center justify-center px-4 py-20 border-t border-gray-800">
@@ -308,18 +313,12 @@ export default function Mint() {
 
             {/* Wallet / Mint */}
             {!isConnected ? (
-              <div className="space-y-2">
-                {connectors.map((c) => (
-                  <button
-                    key={c.uid}
-                    onClick={() => connect({ connector: c })}
-                    disabled={connecting}
-                    className="w-full px-6 py-4 bg-white text-black hover:bg-gray-200 transition-colors disabled:opacity-50"
-                  >
-                    Connect {c.name}
-                  </button>
-                ))}
-              </div>
+              <button
+                onClick={() => setWalletMenuOpen(true)}
+                className="w-full px-6 py-4 bg-white text-black hover:bg-gray-200 transition-colors"
+              >
+                Connect Wallet
+              </button>
             ) : (
               <div className="space-y-2">
                 <button
@@ -371,6 +370,41 @@ export default function Mint() {
           </div>
         </div>
       </div>
+
+      {walletMenuOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4"
+          onClick={() => setWalletMenuOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm border border-gray-800 bg-black p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <span className="font-bold">Connect Wallet</span>
+              <button
+                onClick={() => setWalletMenuOpen(false)}
+                className="text-gray-500 hover:text-white transition-colors"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2">
+              {connectors.map((c) => (
+                <button
+                  key={c.uid}
+                  onClick={() => connect({ connector: c })}
+                  disabled={connecting}
+                  className="w-full px-4 py-3 border border-gray-800 hover:bg-gray-900 transition-colors disabled:opacity-50 text-left"
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
