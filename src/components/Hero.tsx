@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/lib/i18n'
 
 // The artwork explaining itself: three channels, three letters, 0-255.
 // Hover / touch each letter to sweep its channel value.
@@ -65,6 +66,7 @@ function Channel({
 }
 
 export default function Hero() {
+  const { t } = useLanguage()
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
     if (element) {
@@ -88,8 +90,8 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mb-8 text-gray-500 space-y-2"
         >
-          <div className="text-xl md:text-2xl text-gray-400">16,777,216 colors</div>
-          <p>One color. One coordinate. One primitive.</p>
+          <div className="text-xl md:text-2xl text-gray-400">{t.hero.colors}</div>
+          <p>{t.hero.tagline}</p>
         </motion.div>
 
         {/* CTA Buttons */}
@@ -103,13 +105,13 @@ export default function Hero() {
             onClick={() => scrollToSection('mint')}
             className="px-8 py-4 bg-white text-black hover:bg-gray-200 transition-colors"
           >
-            Mint
+            {t.hero.mint}
           </button>
           <button
             onClick={() => scrollToSection('waitlist')}
             className="px-8 py-4 border border-white hover:bg-white hover:text-black transition-colors"
           >
-            Waitlist
+            {t.hero.waitlist}
           </button>
         </motion.div>
 
@@ -122,11 +124,11 @@ export default function Hero() {
         >
           <div>
             <div className="text-2xl font-bold">0.0003Ξ</div>
-            <div className="text-sm text-gray-500">Price</div>
+            <div className="text-sm text-gray-500">{t.hero.price}</div>
           </div>
           <div>
-            <div className="text-2xl font-bold">TBA</div>
-            <div className="text-sm text-gray-500">Launch</div>
+            <div className="text-2xl font-bold">{t.hero.launchValue}</div>
+            <div className="text-sm text-gray-500">{t.hero.launch}</div>
           </div>
         </motion.div>
       </div>

@@ -21,6 +21,7 @@ import {
   basescanUrl,
 } from '@/lib/contract'
 import { rgbToHex, getContrastColor, getRarity, type RGBColor } from '@/lib/utils'
+import { useLanguage } from '@/lib/i18n'
 
 type Mode = 'pick' | 'random' | 'range'
 
@@ -34,6 +35,7 @@ function useDebounced<T>(value: T, ms: number): T {
 }
 
 export default function Mint() {
+  const { t } = useLanguage()
   const [color, setColor] = useState<RGBColor>({ r: 192, g: 255, b: 238 })
   const [mode, setMode] = useState<Mode>('pick')
   const [randomCount, setRandomCount] = useState(10)
@@ -130,14 +132,12 @@ export default function Mint() {
             viewport={{ once: true }}
             className="text-4xl md:text-6xl font-bold mb-4"
           >
-            Mint
+            {t.mint.title}
           </motion.h2>
-          <p className="text-gray-400">
-            Pick your exact color. First come, first served. {MINT_PRICE_LABEL} each.
-          </p>
+          <p className="text-gray-400">{t.mint.subtitle(MINT_PRICE_LABEL)}</p>
           {IS_TESTNET && (
             <div className="mt-4 inline-block border border-yellow-600 text-yellow-500 text-xs px-3 py-1">
-              TESTNET — Base Sepolia
+              {t.mint.testnet}
             </div>
           )}
         </div>
@@ -158,16 +158,16 @@ export default function Mint() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-sm mb-4">
-              <div className="border border-gray-800 p-3">
-                <div className="text-gray-500 mb-1">Token ID</div>
+              <div className="border border-gray-800 p-2 sm:p-3">
+                <div className="text-gray-500 mb-1 text-xs sm:text-sm">{t.mint.tokenId}</div>
                 <div className="text-xs">{tokenId.toLocaleString()}</div>
               </div>
-              <div className="border border-gray-800 p-3">
-                <div className="text-gray-500 mb-1">XYZ</div>
+              <div className="border border-gray-800 p-2 sm:p-3">
+                <div className="text-gray-500 mb-1 text-xs sm:text-sm">{t.mint.xyz}</div>
                 <div className="text-xs">({color.r}, {color.g}, {color.b})</div>
               </div>
-              <div className="border border-gray-800 p-3">
-                <div className="text-gray-500 mb-1">Rarity</div>
+              <div className="border border-gray-800 p-2 sm:p-3">
+                <div className="text-gray-500 mb-1 text-xs sm:text-sm">{t.mint.rarity}</div>
                 <div className="text-xs">{getRarity(color.r, color.g, color.b)}</div>
               </div>
             </div>
@@ -175,16 +175,14 @@ export default function Mint() {
             {/* Live availability */}
             <div className="border border-gray-800 p-4 text-sm">
               {genesis ? (
-                <span className="text-yellow-500">
-                  ★ GENESIS — this color cannot be minted. It can only be won in the raffle.
-                </span>
+                <span className="text-yellow-500">{t.mint.genesisWarning}</span>
               ) : checking ? (
-                <span className="text-gray-500">Checking availability…</span>
+                <span className="text-gray-500">{t.mint.checking}</span>
               ) : isFree ? (
-                <span className="text-green-400">✓ Available</span>
+                <span className="text-green-400">{t.mint.available}</span>
               ) : owner ? (
                 <span className="text-gray-400">
-                  ✗ Taken — owned by{' '}
+                  {t.mint.takenPrefix}{' '}
                   <a
                     href={basescanUrl(`address/${owner}`)}
                     target="_blank"
@@ -246,15 +244,15 @@ export default function Mint() {
             <div className="grid grid-cols-3 gap-2">
               {(
                 [
-                  ['pick', 'This color'],
-                  ['random', 'Random pack'],
-                  ['range', 'Range'],
+                  ['pick', t.mint.modeThisColor],
+                  ['random', t.mint.modeRandomPack],
+                  ['range', t.mint.modeRange],
                 ] as [Mode, string][]
               ).map(([m, label]) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
-                  className={`px-3 py-3 border text-xs transition ${
+                  className={`px-2 sm:px-3 py-3 border text-xs transition ${
                     mode === m ? 'border-white bg-gray-900' : 'border-gray-800 hover:bg-gray-900'
                   }`}
                 >
@@ -264,8 +262,8 @@ export default function Mint() {
             </div>
 
             {mode === 'random' && (
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-gray-500">Count</span>
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <span className="text-gray-500">{t.mint.count}</span>
                 <input
                   type="number"
                   min={1}
@@ -289,7 +287,7 @@ export default function Mint() {
                     type="text"
                     value={rangeFrom}
                     onChange={(e) => setRangeFrom(e.target.value)}
-                    className="flex-1 bg-black border border-gray-800 px-2 py-1"
+                    className="flex-1 min-w-0 bg-black border border-gray-800 px-2 py-1"
                     placeholder="#100000"
                   />
                   <span className="text-gray-500">→</span>
@@ -297,16 +295,16 @@ export default function Mint() {
                     type="text"
                     value={rangeTo}
                     onChange={(e) => setRangeTo(e.target.value)}
-                    className="flex-1 bg-black border border-gray-800 px-2 py-1"
+                    className="flex-1 min-w-0 bg-black border border-gray-800 px-2 py-1"
                     placeholder="#1003E7"
                   />
                 </div>
                 <p className="text-gray-500">
                   {rangeSpan === null
-                    ? 'Invalid range'
+                    ? t.mint.invalidRange
                     : rangeSpan > 5000
-                      ? `${rangeSpan.toLocaleString()} colors — max 5,000 per tx`
-                      : `${rangeSpan.toLocaleString()} colors · taken ones are skipped, excess ETH refunded`}
+                      ? t.mint.rangeTooLarge(rangeSpan.toLocaleString())
+                      : t.mint.rangeOk(rangeSpan.toLocaleString())}
                 </p>
               </div>
             )}
@@ -317,7 +315,7 @@ export default function Mint() {
                 onClick={() => setWalletMenuOpen(true)}
                 className="w-full px-6 py-4 bg-white text-black hover:bg-gray-200 transition-colors"
               >
-                Connect Wallet
+                {t.mint.connectWallet}
               </button>
             ) : (
               <div className="space-y-2">
@@ -331,34 +329,34 @@ export default function Mint() {
                   className="w-full px-6 py-4 bg-white text-black hover:bg-gray-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {signing
-                    ? 'Confirm in wallet…'
+                    ? t.mint.confirmInWallet
                     : confirming
-                      ? 'Minting…'
+                      ? t.mint.minting
                       : mode === 'pick'
-                        ? `Mint ${hex} — ${MINT_PRICE_LABEL}`
+                        ? t.mint.mintThisColor(hex, MINT_PRICE_LABEL)
                         : mode === 'random'
-                          ? `Mint ${randomCount} random`
-                          : 'Mint range'}
+                          ? t.mint.mintRandom(randomCount)
+                          : t.mint.mintRange}
                 </button>
                 <button
                   onClick={() => disconnect()}
                   className="w-full text-xs text-gray-500 hover:text-white transition-colors"
                 >
-                  {address?.slice(0, 6)}…{address?.slice(-4)} — disconnect
+                  {address?.slice(0, 6)}…{address?.slice(-4)} — {t.mint.disconnect}
                 </button>
               </div>
             )}
 
             {confirmed && txHash && (
               <div className="border border-green-800 text-green-400 p-4 text-sm">
-                ✓ Minted!{' '}
+                {t.mint.minted}{' '}
                 <a
                   href={basescanUrl(`tx/${txHash}`)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline"
                 >
-                  View on Basescan
+                  {t.mint.viewOnBasescan}
                 </a>
               </div>
             )}
@@ -381,7 +379,7 @@ export default function Mint() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <span className="font-bold">Connect Wallet</span>
+              <span className="font-bold">{t.mint.connectWallet}</span>
               <button
                 onClick={() => setWalletMenuOpen(false)}
                 className="text-gray-500 hover:text-white transition-colors"
