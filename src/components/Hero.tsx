@@ -43,7 +43,7 @@ function Channel({
     >
       {/* Vertical 0-255 / live value */}
       <span
-        className="absolute font-bold whitespace-nowrap text-[22vw] sm:text-[8rem] md:text-[11rem] leading-none tracking-tight"
+        className="absolute font-bold font-sans whitespace-nowrap text-[min(9vh,13vw)] leading-none tracking-tight"
         style={{
           color: value === null ? pure : color(Math.max(value, 40)),
           writingMode: 'vertical-rl',
@@ -55,7 +55,7 @@ function Channel({
 
       {/* Translucent letter on top */}
       <span
-        className="relative font-black text-[38vw] sm:text-[14rem] md:text-[19rem] leading-none text-white mix-blend-overlay opacity-70"
+        className="relative font-black font-sans text-[min(30vh,32vw)] leading-none text-white mix-blend-overlay opacity-70"
         style={value !== null ? { color: color(value), mixBlendMode: 'normal', opacity: 0.85 } : undefined}
       >
         {letter}

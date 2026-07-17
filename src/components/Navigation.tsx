@@ -7,7 +7,7 @@ const sections = [
   { id: 'mint', name: 'Mint' },
   { id: 'manifesto', name: 'About' },
   { id: 'how', name: 'How It Works' },
-  { id: 'rarity', name: 'Rarity' },
+  { id: 'rarity', name: 'Genesis' },
 ]
 
 export default function Navigation() {
